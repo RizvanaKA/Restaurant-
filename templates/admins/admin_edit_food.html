@@ -1,0 +1,169 @@
+{% extends 'admins/index.html' %}
+{% load static %}
+{% block body %}
+<style>
+  /* Keep the same visual feel as CaterServ booking section */
+  .contact .form .form-control {
+    border: 1px solid rgba(13,110,253,0.25);
+    border-radius: .6rem;
+    padding: .75rem .9rem;
+    background: #fff;
+  }
+
+  .contact .form .form-select {
+    border: 1px solid rgba(13,110,253,0.25);
+    border-radius: .6rem;
+    padding: .6rem .75rem;
+    background: #fff;
+  }
+
+  .card-center {
+    border-bottom: 1px solid rgba(13,110,253,0.08);
+    border-top: 1px solid rgba(13,110,253,0.08);
+    background: #f8f9fa;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .page-badge {
+    display:inline-block;
+    padding: .35rem .9rem;
+    border-radius: 50rem;
+    border: 1px solid rgba(13,110,253,0.15);
+    background: #fff;
+    font-weight:700;
+    color:#212529;
+    margin-bottom:.75rem;
+  }
+
+  .form-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.03), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    box-shadow: 0 10px 30px rgba(18,63,145,0.06);
+  }
+
+  .form-card .card-top {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.04), transparent);
+  }
+
+  .form-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: .75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: #fff;
+    background: linear-gradient(135deg, #FCB53B, #FFE797);
+    box-shadow: 0 6px 18px rgba(13,110,253,0.12);
+  }
+
+  .form-title { margin: 0; font-size: 1.05rem; letter-spacing: .2px; }
+
+  .form-card .card-body { padding: 1.25rem; }
+
+  .form-actions { padding: 1rem 1.25rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.03); display:flex; justify-content:flex-end; }
+
+  .btn-primary.rounded-pill { border-radius:50rem; padding:.6rem 1.25rem; }
+
+  @media (max-width:576px) {
+    .form-card .card-top { padding:.8rem 1rem; }
+    .form-card .card-body { padding:1rem; }
+  }
+</style>
+
+<!-- Hero (identical look) -->
+<div class="container-fluid bg-light py-6 my-6 mt-0">
+  <div class="container text-center animated bounceInDown">
+    <h1 class="display-1 mb-4">Edit Food</h1>
+    <ol class="breadcrumb justify-content-center mb-0 animated bounceInDown">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Pages</a></li>
+      <li class="breadcrumb-item text-dark" aria-current="page">Edit Food</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Main section: left image (col-1), center form area (col-10), right image (col-1) -->
+<div class="container-fluid contact py-6 wow bounceInUp" data-wow-delay="0.1s">
+  <div class="container">
+    <div class="row g-0">
+      <!-- left faded image column -->
+      <div class="col-1 d-none d-md-block">
+        <img src="/static/home/img/background-site.jpg" class="img-fluid h-100 w-100 rounded-start" style="object-fit: cover; opacity: 0.7;" alt="">
+      </div>
+
+      <!-- center: replicated booking container but with Edit Food form -->
+      <div class="col-10">
+        <div class="card-center">
+          <div class="text-center">
+            <span class="page-badge text-dark fw-bold">Edit Food</span>
+            <h1 class="display-5 mb-4">Update item in your menu</h1>
+          </div>
+
+          <!-- form: layout & spacing use same grid as original -->
+          <div class="row g-4 form justify-content-center">
+            <div class="col-12 col-lg-10">
+              <div class="card form-card">
+                <div class="card-top">
+                  <div class="form-badge"><i class="fas fa-hamburger"></i></div>
+                  <div>
+                    <h5 class="form-title text-primary fw-bold mb-0">Edit Food</h5>
+                    <div class="text-muted small">Update food details</div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <form method="post" action="/myapp/edit_food_post/" >
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                      <div class="col-lg-6 col-md-6">
+                        <input type="text" name="food" class="form-control border-primary p-2" placeholder="Food Name" value="{{ data.name }}" pattern="[A-Za-z\s]{2,50}" title="Food name should be 2-50 characters long and contain only letters and spaces" required>
+                      </div>
+
+                      <div class="col-lg-6 col-md-6">
+                        <input type="text" name="category" class="form-control border-primary p-2" placeholder="Category" value="{{ data.category }}" pattern="[A-Za-z\s]{2,50}" title="Category should be 2-50 characters long and contain only letters and spaces" required>
+                      </div>
+
+                      <div class="col-lg-6 col-md-6">
+                        <input type="number" name="price" class="form-control border-primary p-2" placeholder="Price" value="{{ data.price }}" pattern="[0-9]+(\.[0-9]{1,2})?" title="Price should be a number with up to 2 decimal places (e.g., 10.99)" min="0" step="0.01" required>
+                      </div>
+
+                      <div class="col-lg-6 col-md-6">
+                        <input type="text" name="description" class="form-control border-primary p-2" placeholder="Description" value="{{ data.description }}" pattern=".{5,200}" title="Description should be 5-200 characters long" required>
+                      </div>
+
+
+                         <div class="col-lg-6 col-md-6">
+                        <input type="text" name="qty" class="form-control border-primary p-2" placeholder="Quantity" value="{{ data.quantity }}" pattern="[0-9]+(\.[0-9]{1,2})?" title="Enter a valid qty" required>
+                      </div>
+                    </div>
+
+                    <div class="form-actions mt-3">
+                      <button type="submit" class="btn btn-primary rounded-pill">Edit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div> <!-- /col-12 col-lg-10 -->
+          </div> <!-- /row g-4 form -->
+        </div> <!-- /card-center -->
+      </div>
+
+      <!-- right faded image column -->
+      <div class="col-1 d-none d-md-block">
+        <img src="/static/home/img/background-site.jpg" class="img-fluid h-100 w-100 rounded-end" style="object-fit: cover; opacity: 0.7;" alt="">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}

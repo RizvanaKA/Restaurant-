@@ -1,0 +1,114 @@
+{% extends 'admins/index.html' %}
+{% block body %}
+<head>
+  <meta charset="UTF-8">
+  <title>Update Order Status — CaterServ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Web Fonts (match site) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+  <!-- Icon Font -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+
+  <!-- Use site bootstrap + style so colors/fonts match -->
+  <link href="/static/home/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/home/css/style.css" rel="stylesheet">
+
+  <style>
+    /* Keep the same gentle card design used across admin forms */
+    body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
+    .update-wrap { padding: 2.25rem 0; }
+    .form-card {
+      border-radius: 1rem;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(13,110,253,0.03), #fff 40%);
+      border: 1px solid rgba(13,110,253,0.06);
+      box-shadow: 0 10px 30px rgba(18,63,145,0.06);
+    }
+    .form-card .card-top {
+      display:flex; align-items:center; gap:.75rem;
+      padding:1rem 1.25rem; border-bottom:1px solid rgba(0,0,0,0.03);
+      background: linear-gradient(90deg, rgba(13,110,253,0.04), transparent);
+    }
+    .form-badge { width:56px; height:56px; border-radius:.75rem; display:inline-flex; align-items:center; justify-content:center;
+                  font-size:1.15rem; color:#fff; background: linear-gradient(135deg,#FCB53B,#FFE797);
+                  box-shadow: 0 6px 18px rgba(13,110,253,0.12); }
+    .form-title { margin:0; font-size:1.05rem; letter-spacing:.2px; }
+    .form-card .card-body { padding:1.25rem; }
+    .form-actions { padding:1rem 1.25rem 1.25rem; background:transparent; border-top:1px solid rgba(0,0,0,0.03);
+                    display:flex; justify-content:flex-end; gap:.5rem; }
+    .btn-primary.rounded-pill { border-radius:50rem; padding:.55rem 1.25rem; }
+    /* small responsive tweak */
+    @media (max-width:576px) { .form-card .card-top { padding:.8rem 1rem; } .form-card .card-body { padding:1rem; } }
+  </style>
+</head>
+<body>
+
+<div class="container update-wrap">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="card form-card">
+        <div class="card-top">
+          <div class="form-badge"><i class="fas fa-sync-alt"></i></div>
+          <div>
+            <h5 class="form-title text-primary fw-bold mb-0">Update Order Status</h5>
+            <div class="text-muted small">Choose a new status for this order</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <form method="post" action="/myapp/order_update_post/" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="orderStatus" class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select" id="orderStatus" name="status" required>
+                <option value="">-- Select Status --</option>
+                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                <option value="not_delivered" {% if order.status == 'not_delivered' %}selected{% endif %}>Not Delivered</option>
+                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+              </select>
+              <div class="invalid-feedback">Please choose a status.</div>
+            </div>
+
+            <div class="form-actions">
+              <a href="/myapp/admin_view_order/" class="btn btn-outline-secondary rounded-pill">Cancel</a>
+              <button type="submit" class="btn btn-primary rounded-pill">Update</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include site JS so interactions match (and bootstrap validity works) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="/static/home/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Simple client-side validation: only the dropdown is required
+  (function () {
+    'use strict';
+    const forms = document.querySelectorAll('form[novalidate]');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          // allow normal POST to server (no JS redirect)
+          const btn = form.querySelector('button[type=submit]');
+          if (btn) { btn.disabled = true; btn.innerText = 'Updating...'; }
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+</body>
+{% endblock %}
+</html>

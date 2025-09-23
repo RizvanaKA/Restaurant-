@@ -1,0 +1,158 @@
+{% extends 'user/user_index.html' %}
+{% block body %}
+<style>
+  /* Matching admin/theme card styling (only design) */
+  .cards-wrap { padding: 1.75rem 0; }
+  .checkout-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 8px 22px rgba(18,63,145,0.04);
+    max-width: 720px;
+    margin: 1.5rem auto;
+  }
+  .checkout-top {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    padding:1.0rem 1.2rem;
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent);
+  }
+  .checkout-badge {
+    width:56px;
+    height:56px;
+    border-radius:.6rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.05rem;
+    color:#fff;
+    background: linear-gradient(135deg,#FCB53B,#FFE797);
+    box-shadow: 0 6px 18px rgba(13,110,253,0.08);
+  }
+  .checkout-title { margin:0; font-size:1.18rem; letter-spacing:.2px; }
+  .checkout-sub { color:#6c757d; font-size:.9rem; margin-top:.12rem; }
+
+  .checkout-body { padding:1.25rem; display:flex; flex-direction:column; gap:.75rem; }
+  .checkout-row { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+  .amt-large { font-size:1.5rem; font-weight:700; color:#0b5ed7; }
+  .small-muted { color:#6c757d; font-size:.92rem; }
+
+  .btn-pay {
+    border-radius:.8rem;
+    padding:.65rem 1.1rem;
+    font-size:1.02rem;
+    box-shadow: 0 10px 30px rgba(13,110,253,0.08);
+  }
+
+  @media (max-width: 575.98px) {
+    .checkout-card { margin: 1rem; }
+    .checkout-top { padding:.75rem; }
+    .checkout-body { padding:.9rem; }
+  }
+</style>
+
+<div class="cards-wrap">
+  <div class="checkout-card">
+    <div class="checkout-top">
+      <div class="checkout-badge" aria-hidden="true"><i class="fas fa-wallet"></i></div>
+      <div>
+        <h4 class="checkout-title mb-0">Checkout</h4>
+        <div class="checkout-sub">Secure payment via Razorpay</div>
+      </div>
+      <div class="ms-auto text-end">
+        <div class="small-muted">Order</div>
+        <div class="fw-semibold">#{{ order_main_id }}</div>
+      </div>
+    </div>
+
+    <div class="checkout-body">
+      <div class="checkout-row">
+        <div>
+          <div class="small-muted">Amount to pay</div>
+          <div class="amt-large">₹ {{ display_amount }}</div>
+        </div>
+
+        <div class="text-end">
+          <div class="small-muted">Currency</div>
+          <div class="fw-semibold">INR</div>
+        </div>
+      </div>
+
+      <div class="checkout-row" style="margin-top:.5rem;">
+        <div class="small-muted">Payment method</div>
+        <div class="fw-semibold">Razorpay</div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+        <button id="rzp-button1" class="btn btn-success btn-pay">
+          <i class="fas fa-credit-card me-2"></i>Pay Now ₹{{ display_amount }}
+        </button>
+      </div>
+    </div>
+
+    <div class="px-3 pb-3 text-end small-muted">
+      <small>Powered by Razorpay</small>
+    </div>
+  </div>
+</div>
+
+<!-- Razorpay Checkout JS (unchanged) -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById('rzp-button1').onclick = function(e){
+    var options = {
+        "key": "{{ razorpay_api_key }}",
+        "amount": "{{ amount }}", // in paise
+        "currency": "{{ currency }}",
+        "name": "My Restaurant",
+        "description": "Order #{{ order_main_id }}",
+        "order_id": "{{ order_id }}",
+        "handler": function (response){
+            // send payment info to server for verification
+            var data = new FormData();
+            data.append('razorpay_payment_id', response.razorpay_payment_id);
+            data.append('razorpay_order_id', response.razorpay_order_id);
+            data.append('razorpay_signature', response.razorpay_signature);
+            data.append('order_main_id', "{{ order_main_id }}");
+
+            fetch("/myapp/payment_success/", {
+                method: "POST",
+                body: data,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === "success"){
+                    alert("Payment Successful!");
+                    window.location.href = "/myapp/user_view_cart2/#block";
+                } else {
+                    alert(res.msg || "Payment failed. Please try again.");
+                    window.location.href = "/myapp/user_view_cart2/#block";
+                }
+            })
+            .catch(err => {
+                alert("Something went wrong. Please try again.");
+                window.location.href = "/myapp/user_view_cart2/#block";
+            });
+        },
+        "prefill": {
+            "name": "{{ request.user.username }}",
+            "email": "{{ request.user.email }}",
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+    e.preventDefault();
+};
+</script>
+{% endblock %}

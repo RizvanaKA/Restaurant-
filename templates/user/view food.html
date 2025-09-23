@@ -1,0 +1,194 @@
+{% extends 'user/user_index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+  /* Reused theme from your Add Food page (no side images) */
+  .page-hero { padding: 2.5rem 0 1rem; background: #f8f9fa; }
+  .page-badge {
+    display:inline-block;
+    padding: .35rem .9rem;
+    border-radius: 50rem;
+    border: 1px solid rgba(13,110,253,0.15);
+    background: #fff;
+    font-weight:700;
+    color:#212529;
+    margin-bottom:.75rem;
+  }
+
+  .cards-wrap { padding: 1.5rem 0; }
+  .food-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 10px 30px rgba(18,63,145,0.04);
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  .food-card:hover { transform: translateY(-6px); box-shadow: 0 18px 36px rgba(18,63,145,0.08); }
+
+  .food-top {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    padding:.85rem 1rem;
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent);
+  }
+
+  .food-badge {
+    width:56px;
+    height:56px;
+    border-radius:.6rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.15rem;
+    color:#fff;
+    background: linear-gradient(135deg,#FCB53B,#FFE797);
+    flex: 0 0 56px;
+  }
+
+  .food-title { margin:0; font-size:1.02rem; letter-spacing:.2px; }
+  .food-sub { color:#6c757d; font-size:.85rem; margin-top:.12rem; }
+
+  .food-body { padding:1rem; display:flex; flex-direction:column; gap:.5rem; flex:1 1 auto; }
+  .food-meta { display:flex; gap:.5rem; align-items:center; font-size:.9rem; flex-wrap:wrap; color:#495057; }
+  .badge-available { background:#e6f4ea; color:#1b7a3a; padding:.25rem .5rem; border-radius:.5rem; font-weight:600; }
+  .badge-unavailable { background:#fff0f0; color:#b02a37; padding:.25rem .5rem; border-radius:.5rem; font-weight:600; }
+  .badge-other { background:#f0f7ff; color:#0b5ed7; padding:.25rem .5rem; border-radius:.5rem; font-weight:600; }
+
+  .food-actions { display:flex; gap:.5rem; margin-top:.5rem; }
+  .food-actions .btn { min-width:120px; }
+
+  .card-footer-sm { padding:.6rem 1rem; text-align:right; color:#6c757d; font-size:.85rem; border-top:1px solid rgba(0,0,0,0.03); }
+
+  /* message area */
+  .msg-wrap { position: fixed; top: 1rem; right: 1rem; z-index: 1080; width: 320px; max-width: calc(100% - 2rem); }
+
+  @media (max-width: 991.98px) {
+    .food-body { min-height:6.5rem; }
+  }
+  @media (max-width:576px) {
+    .msg-wrap { width: 92%; left: 4%; right: 4%; }
+  }
+</style>
+
+{# messages area #}
+
+
+<!-- Hero -->
+<div class="container-fluid page-hero">
+  <div class="container text-center">
+    <h1 class="display-4 mb-2">Menu</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Menu</a></li>
+      <li class="breadcrumb-item text-dark" aria-current="page">Available Foods</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Main content: single centered column (no side images) -->
+<div class="container-fluid contact py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card-center mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="page-badge">Menu</span>
+              <h2 class="mb-0">Available Foods</h2>
+              <div class="text-muted small">Choose from the items below</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container cards-wrap">
+          <div class="row g-3">
+            {% for i in data %}
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card food-card h-100 border-0">
+                <div class="food-top">
+                  <div class="food-badge" aria-hidden="true"><i class="fas fa-hamburger"></i></div>
+
+                  <div>
+                    <h5 class="food-title fw-bold mb-0">{{ i.name }}</h5>
+                    <div class="food-sub">{{ i.category }}</div>
+                  </div>
+
+                  <div class="ms-auto text-end">
+                    <div class="fw-semibold">₹ {{ i.price }}</div>
+                  </div>
+                    <div class="ms-auto text-end">
+             <small class="text-muted">Quantity {{ i.quantity }}</small>
+                  </div>
+                </div>
+
+                <div class="food-body">
+                  <div class="text-muted small">
+                    {% if i.description %}{{ i.description|truncatechars:120 }}{% else %}<em>No description</em>{% endif %}
+                  </div>
+
+
+                  <div class="food-actions mt-2">
+                    <!-- user Order button -->
+
+
+
+
+
+    <!-- compact quantity input -->
+  <form method="post" action="/myapp/add_cart/{{ i.id }}" class="d-flex align-items-center gap-2">
+  {% csrf_token %}
+  <input type="number" name="qty" value="1" min="1" step="1" required
+         class="form-control form-control-sm" style="width:84px; padding:.375rem .5rem; text-align:center;" />
+  <button type="submit" onclick="return confirm('Are You Sure To Order {{ i.name }} ')" class="btn btn-primary btn-sm rounded-pill">
+    <i class="fas fa-cart-plus me-1"></i> Add to cart
+  </button>
+</form>
+
+
+
+
+
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+              <div class="alert alert-warning mb-0">
+                No food items found.
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Auto-hide alerts after 4 seconds
+    setTimeout(function () {
+      document.querySelectorAll('.alert').forEach(function (el) {
+        if (typeof bootstrap !== 'undefined') {
+          let a = new bootstrap.Alert(el);
+          a.close();
+        } else {
+          el.remove();
+        }
+      });
+    }, 4000);
+  });
+</script>
+
+{% endblock %}

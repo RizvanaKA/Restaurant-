@@ -1,0 +1,124 @@
+{% extends 'user/user_index.html' %}
+{% block body %}
+
+<style>
+  /* Card visuals — uses the same style you provided (only visual changes) */
+  .cards-wrap { padding: 1.5rem 0; }
+
+  .booking-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 8px 18px rgba(18,63,145,0.04);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .booking-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(18,63,145,0.08);
+  }
+
+  .booking-top {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    padding:.85rem 1rem;
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent);
+  }
+
+  .booking-badge {
+    width:56px;
+    height:56px;
+    border-radius:.6rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.15rem;
+    color:#fff;
+    background: linear-gradient(135deg,#FCB53B,#FFE797);
+    flex: 0 0 56px;
+    overflow: hidden;
+  }
+
+  .booking-badge img { width:100%; height:100%; object-fit:cover; display:block; }
+
+  .booking-title { margin:0; font-size:1.02rem; letter-spacing:.2px; }
+  .booking-sub { color:#6c757d; font-size:.85rem; margin-top:.12rem; }
+
+  .booking-body { padding:1rem; min-height:6.2rem; display:flex; flex-direction:column; gap:.5rem; flex: 1 1 auto; }
+  .booking-meta { display:flex; gap:1rem; align-items:center; color:#495057; font-size:.95rem; flex-wrap:wrap; }
+
+  .booking-footer { padding:.75rem 1rem; text-align:right; color:#6c757d; font-size:.9rem; }
+
+  .btn-book {
+    min-width:100px;
+  }
+
+  @media (max-width: 991.98px) {
+    .booking-body { min-height:7.8rem; }
+  }
+</style>
+
+<div class="container cards-wrap">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0 text-dark">Available Tables</h4>
+  </div>
+
+  <div class="row g-3">
+    {% for i in data %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card booking-card h-100 border-0">
+        <div class="booking-top">
+          <div class="booking-badge" aria-hidden="true">
+            {# use a table image if you have one on the model, else fallback to static image #}
+            {% if i.image %}
+              <img src="{{ i.image.url }}" alt="{{ i.tablename }}">
+            {% else %}
+              <i class="fas fa-utensils"></i>
+            {% endif %}
+          </div>
+
+          <div>
+            <h5 class="booking-title fw-bold mb-0">{{ i.TABLE.tablename }}</h5>
+            <div class="booking-sub">Capacity: {{ i.TABLE.capacity }}</div>
+          </div>
+
+          <div class="ms-auto text-end">
+            {# optional small meta — leave blank or use a created/updated date if available #}
+            {% if i.created_at %}
+              <small class="text-muted">{{ i.created_at|date:"M d, Y" }}</small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="booking-body">
+          <div class="booking-meta">
+            <div><i class="fas fa-chair me-1 text-primary"></i> Seats: <strong class="ms-1">{{ i.TABLE.capacity }}</strong></div>
+            {# show a color or other attribute if present #}
+            {% if i.color %}
+              <div><i class="fas fa-palette me-1 text-primary"></i> Color: <strong class="ms-1">{{ i.color }}</strong></div>
+            {% endif %}
+          </div>
+
+          <p class="mb-0 text-muted" style="font-size:.92rem;">
+            {# optional description if your model has it; otherwise leave placeholder text removed #}
+            {% if i.description %}{{ i.description|truncatechars:120 }}{% endif %}
+          </p>
+        </div>
+       <div class="booking-footer">
+          {# Book link — includes id so it points to specific table if your view expects it #}
+          <a href="/myapp/cancel_booking/{{ i.id }}" class="btn btn-sm btn-primary btn-book rounded-pill">Cancel</a>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

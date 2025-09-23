@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>CaterServ - Login</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playball&display=swap" rel="stylesheet">
+
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Customized Bootstrap Stylesheet (same as main site) -->
+  <link href="/static/home/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/home/css/style.css" rel="stylesheet">
+
+  <style>
+    /* Small page-specific tweaks to match the theme */
+    body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
+    .login-hero { min-height: 100vh; display: flex; align-items: center; }
+    .brand-logo { font-family: 'Playball', cursive; font-size: 2.25rem; }
+    .card-login { border-radius: 1rem; box-shadow: 0 8px 25px rgba(18, 63, 145, 0.06); }
+    .form-control:focus { box-shadow: 0 0 0 .15rem rgba(13,110,253,.15); }
+    .or-sep { position: relative; text-align: center; }
+    .or-sep::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e9ecef; transform: translateY(-50%); }
+    .or-text { display: inline-block; background: #fff; padding: 0 .75rem; position: relative; z-index: 2; }
+    @media (max-width: 991.98px) {
+      .login-hero { padding: 3rem 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="container login-hero">
+    <div class="container">
+      <div class="row g-4 justify-content-center align-items-center">
+
+        <!-- Left: Illustration / Hero Image -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="text-center">
+            <img src="/static/home/img/fact.jpg" alt="CaterServ" class="img-fluid rounded animated zoomIn" style="max-width:95%;">
+            <h2 class="mt-4 display-6">Welcome back! Reserve your table in seconds.</h2>
+            <p class="text-muted">Sign in to view bookings, manage events and quickly book tables for your customers.</p>
+          </div>
+        </div>
+
+        <!-- Right: Login Card -->
+        <div class="col-lg-5">
+          <div class="card card-login p-4 p-md-5 bg-white border-0">
+            <div class="card-body">
+
+              <div class="text-center mb-4">
+                <h1 class="brand-logo text-primary mb-0">Resto<span class="text-dark">Book</span></h1>
+                <p class="text-muted mt-2">Sign in to your account</p>
+                  {% if messages %}
+  <div class="messages position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+              </div>
+
+              <form id="loginForm"  method="post" action="/myapp/login_post/">{% csrf_token %}
+                <div class="mb-3">
+                  <label for="inputEmail" class="form-label">Username</label>
+                  <input type="text" class="form-control" id="inputEmail" placeholder="Enter your username" name="username"required>
+                  <div class="invalid-feedback">Please enter your Username</div>
+                </div>
+
+                <div class="mb-3 position-relative">
+                  <label for="inputPassword" class="form-label">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Enter your password" name="password"required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePass" tabindex="-1"><i class="fas fa-eye"></i></button>
+                    <div class="invalid-feedback">Please enter your password.</div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="rememberCheck">
+                    <label class="form-check-label" for="rememberCheck">Remember me</label>
+                  </div>
+                </div>
+
+                <div class="d-grid mb-3">
+                  <button type="submit" class="btn btn-primary btn-lg rounded-pill">Sign In</button>
+                </div>
+
+
+
+                <p class="text-center text-muted small mb-0">Don't have an account? <a href="/myapp/user_reg/" class="text-primary text-decoration-none fw-semibold">Create one</a></p>
+              </form>
+
+            </div>
+          </div>
+
+          <div class="text-center mt-3 small text-muted">
+            By signing in, you agree to our <a href="#" class="text-decoration-none">Terms</a> & <a href="#" class="text-decoration-none">Privacy Policy</a>.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Optional Footer (small) -->
+  <footer class="container text-center mt-5 mb-4 text-muted small">
+    &copy; <span id="year"></span> CaterServ. All rights reserved.
+  </footer>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/home/lib/wow/wow.min.js"></script>
+  <script src="/static/home/js/main.js"></script>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Toggle password visibility
+    document.getElementById('togglePass').addEventListener('click', function() {
+      const pw = document.getElementById('inputPassword');
+      const icon = this.querySelector('i');
+      if (pw.type === 'password') { pw.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+      else { pw.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+    });
+
+    // Bootstrap validation: allow real form submission to server (Django) when valid
+    (function () {
+      'use strict'
+      const form = document.getElementById('loginForm');
+      form.addEventListener('submit', function (e) {
+        if (!form.checkValidity()) {
+          // If form is invalid, prevent submission and show validation UI
+          e.preventDefault();
+          e.stopPropagation();
+          form.classList.add('was-validated');
+        } else {
+          // Form is valid — DO NOT preventDefault so the form posts to the server (action="/myapp/login_post/").
+          // Optionally disable the submit button to avoid double submits while the request is processed by the server.
+          const btn = form.querySelector('button[type=submit]');
+          if (btn) {
+            btn.disabled = true;
+            btn.dataset.orig = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Signing in...';
+          }
+          // Let the browser submit the form normally (no client-side redirect)
+        }
+      }, false)
+    })();
+  </script>
+<script>
+  setTimeout(function () {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function (alert) {
+      let bsAlert = new bootstrap.Alert(alert);
+      bsAlert.close();
+    });
+  }, 4000);
+</script>
+</body>
+
+</html>

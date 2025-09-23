@@ -1,0 +1,54 @@
+{% extends 'admins/index.html' %}
+{% block body %}
+<style>
+  .cards-wrap { padding: 1.5rem 0; }
+  .order-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 8px 18px rgba(18,63,145,0.04);
+  }
+  .order-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(18,63,145,0.08);
+  }
+  .order-top {
+    padding:.85rem 1rem;
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent);
+    font-weight:600;
+    font-size:1.05rem;
+  }
+  .order-body { padding:1rem; font-size:.95rem; color:#495057; }
+  .order-footer {
+    padding:.75rem 1rem;
+    border-top:1px solid rgba(0,0,0,0.05);
+    font-weight:600;
+    text-align:right;
+    color:#0d6efd;
+  }
+</style>
+
+<div class="container cards-wrap">
+  <div class="row g-3">
+    {% for i in data %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card order-card h-100 border-0">
+        <div class="order-top">
+          {{ i.FOOD.name }}
+        </div>
+        <div class="order-body">
+          <div>Quantity: <strong>{{ i.quantity }}</strong></div>
+          <div>Amount: <strong>{{ i.amount }}</strong></div>
+        </div>
+        <div class="order-footer">
+          Total: {{ total }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'user/user_index.html' %}
+{% block body %}
+
+<style>
+  /* Keep existing card styles */
+  .cards-wrap { padding: 1.5rem 0; }
+  .order-card { border-radius: 1rem; overflow: hidden; background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%); border: 1px solid rgba(13,110,253,0.06); transition: transform .14s ease, box-shadow .14s ease; box-shadow: 0 8px 18px rgba(18,63,145,0.04); height: 100%; display: flex; flex-direction: column; }
+  .order-card:hover { transform: translateY(-6px); box-shadow: 0 18px 36px rgba(18,63,145,0.08); }
+  .order-top { display:flex; align-items:center; gap:.75rem; padding:.85rem 1rem; border-bottom:1px solid rgba(0,0,0,0.03); background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent); }
+  .order-badge { width:56px; height:56px; border-radius:.6rem; display:inline-flex; align-items:center; justify-content:center; font-size:1.15rem; color:#fff; background: linear-gradient(135deg,#FCB53B,#FFE797); flex: 0 0 56px; overflow: hidden; }
+  .order-title { margin:0; font-size:1.02rem; letter-spacing:.2px; }
+  .order-sub { color:#6c757d; font-size:.85rem; margin-top:.12rem; }
+  .order-body { padding:1rem; min-height:6.2rem; display:flex; flex-direction:column; gap:.5rem; flex: 1 1 auto; }
+  .order-meta { display:flex; flex-direction:column; gap:.3rem; color:#495057; font-size:.95rem; flex-wrap:wrap; }
+  .order-footer { padding:.75rem 1rem; text-align:right; color:#6c757d; font-size:.9rem; display:flex; justify-content:space-between; align-items:center; }
+  .btn-order, .btn-pay-all { min-width:100px; }
+  .pay-all-container { display:flex; justify-content:flex-end; margin-top:2rem; }
+</style>
+
+<div class="container cards-wrap">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0 text-dark">Order History</h4>
+  </div>
+
+  <div class="row g-3">
+    {% for order in orders %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card order-card h-100 border-0">
+        <div class="order-top">
+          <div class="order-badge"><i class="fas fa-receipt"></i></div>
+
+          <div>
+            <h5 class="order-title fw-bold mb-0">Order #{{ order.order.id }}</h5>
+            <div class="order-sub">Total: ₹{{ order.order.amount }} | Quantity: {{ order.order.quantity }}</div>
+          </div>
+
+          <div class="ms-auto text-end">
+            <small class="text-muted">{{ order.order.created_at|date:"M d, Y" }}</small>
+          </div>
+        </div>
+
+        <div class="order-body">
+          <div class="order-meta">
+            <strong>Status:</strong> {{ order.order.status }}
+            <strong>Items:</strong>
+            <ul class="mb-0">
+              {% for item in order.items %}
+                <li>{{ item.FOOD.name }} — Qty: {{ item.quantity }} — ₹{{ item.amount }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    {% empty %}
+      <p>No orders found.</p>
+    {% endfor %}
+  </div>
+
+  {% comment %} Pay All Button at the bottom {% endcomment %}
+{#  {% with total_amount=0 %}#}
+{#    {% for order in orders %}#}
+{#      {% with total_amount=total_amount|add:order.order.amount %}{% endwith %}#}
+{#    {% endfor %}#}
+{#    {% if orders %}#}
+{#      <div class="pay-all-container">#}
+{#        <a href="/myapp/payment/{{ order.order.id }}/{{ order.order.amount }}/" class="btn btn-success btn-pay-all rounded-pill">#}
+{#          Pay All (₹{{ total_amount_all_orders }})#}
+{#        </a>#}
+{#      </div>#}
+{#    {% endif %}#}
+{#  {% endwith %}#}
+{##}
+{#{% if orders %}#}
+{#  <div class="pay-all-container">#}
+{#    <a href="/myapp/pay_all/{{ order_ids }}/{{ total_amount_all_orders }}"#}
+{#       class="btn btn-success btn-pay-all rounded-pill">#}
+{#      Pay All (₹{{ total_amount_all_orders }})#}
+{#    </a>#}
+{#  </div>#}
+{#{% endif %}#}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'admins/index.html' %}
+{% block body %}
+<style>
+  /* Minimal visual card styling — ONLY visual changes, no data logic or formatting */
+  .cards-wrap { padding: 1.5rem 0; }
+
+  .booking-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(13,110,253,0.02), #fff 40%);
+    border: 1px solid rgba(13,110,253,0.06);
+    transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 8px 18px rgba(18,63,145,0.04);
+  }
+
+  .booking-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(18,63,145,0.08);
+  }
+
+  .booking-top {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    padding:.85rem 1rem;
+    border-bottom:1px solid rgba(0,0,0,0.03);
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), transparent);
+  }
+
+  .booking-badge {
+    width:46px;
+    height:46px;
+    border-radius:.6rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.05rem;
+    color:#fff;
+    background: linear-gradient(135deg,#FCB53B,#FFE797);
+  }
+
+  .booking-title { margin:0; font-size:1.02rem; letter-spacing:.2px; }
+  .booking-sub { color:#6c757d; font-size:.85rem; margin-top:.12rem; }
+
+  .booking-body { padding:1rem; min-height:7rem; display:flex; flex-direction:column; gap:.5rem; }
+  .booking-meta { display:flex; gap:1rem; align-items:center; color:#495057; font-size:.95rem; flex-wrap:wrap; }
+
+  .booking-footer { padding:.65rem 1rem 1rem; text-align:right; color:#6c757d; font-size:.85rem; }
+
+  @media (max-width: 991.98px) {
+    .booking-body { min-height:7.8rem; }
+  }
+</style>
+
+<div class="container cards-wrap">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0 text-dark">Table Bookings</h4>
+  </div>
+
+  <div class="row g-3">
+    {% for i in data %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card booking-card h-100 border-0">
+        <div class="booking-top">
+          <div class="booking-badge" aria-hidden="true"><i class="fas fa-calendar-check"></i></div>
+          <div>
+            <h5 class="booking-title fw-bold mb-0">{{ i.USER.name }}</h5>
+            <div class="booking-sub">Table: {{ i.TABLE.tablename }}</div>
+          </div>
+          <div class="ms-auto text-end">
+            <small class="text-muted">{{ i.date }}</small>
+          </div>
+        </div>
+
+        <div class="booking-body">
+          <div class="booking-meta">
+            <div><i class="fas fa-chair me-1 text-primary"></i> Status: <strong class="ms-1">{{ i.status }}</strong></div>
+          </div>
+        </div>
+
+        <div class="booking-footer">
+          <!-- purely visual footer, no data changes -->
+          <small class="text-muted">Booking info</small>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
