@@ -74,14 +74,17 @@
 
         <div class="booking-body">
           <div class="booking-meta">
+                          <div><i class="fas fa-chair me-1 text-primary"></i> Booking Date: <strong class="ms-1">{{ i.bookingdate }}</strong></div>
+
             <div><i class="fas fa-chair me-1 text-primary"></i> Status: <strong class="ms-1">{{ i.status }}</strong></div>
           </div>
         </div>
 
         <div class="booking-footer">
           <!-- purely visual footer, no data changes -->
-          <small class="text-muted">Booking info</small>
-        </div>
+            {% if i.status == 'Booked' %}
+        <a href="/myapp/update_booking_status/{{ i.id }}" class="btn btn-primary" >  <small class="text-muted">Update</small></a>
+       {% endif %} </div>
       </div>
     </div>
     {% endfor %}
