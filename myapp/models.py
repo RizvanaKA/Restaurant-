@@ -31,11 +31,19 @@ class Food_Items_table(models.Model):
     status=models.CharField(max_length=200)
     quantity=models.BigIntegerField(default=1)
 
+class Review_table(models.Model):
+    USER=models.ForeignKey(User_table,on_delete=models.CASCADE)
+    FOOD=models.ForeignKey(Food_Items_table,on_delete=models.CASCADE)
+    review=models.CharField(max_length=200)
+    rating=models.FloatField()
+    date=models.DateField()
+
 
 class Booking_table(models.Model):
     USER=models.ForeignKey(User_table,on_delete=models.CASCADE)
     TABLE=models.ForeignKey(Table_table,on_delete=models.CASCADE)
     date=models.DateField()
+    bookingdate=models.DateField()
     status=models.CharField(max_length=200)
 
 class Order_main_table(models.Model):

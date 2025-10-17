@@ -145,6 +145,14 @@ def edit_food_post(request):
 def admin_view_booking(request):
     a=Booking_table.objects.all()
     return render(request,'admins/admin_view_booking.html',{'data':a})
+
+@login_required(login_url='/myapp/')
+
+def update_booking_status(request,id):
+    a=Booking_table.objects.get(id=id)
+    a.status='Completed'
+    a.save()
+    return redirect("/myapp/admin_view_booking/#block")
 @login_required(login_url='/myapp/')
 
 def admin_view_order(request):
@@ -246,16 +254,22 @@ def user_view_table(request):
 @login_required(login_url='/myapp/')
 
 
-def user_book_table(request,id):
+def user_add_date(request,id):
+    request.session['did']=id
+    return render(request,'user/add date.html',{'id':id})
+
+def user_book_table(request):
+    bookdate= request.POST['Date']
     date=datetime.now().today().date()
-    var=Booking_table.objects.filter(TABLE_id=id,date=date)
+    var=Booking_table.objects.filter(TABLE_id=request.session['did'],date=date)
     if var.exists():
         messages.warning(request,'Already Booked')
         return redirect('/myapp/user_view_table/#block')
 
     var2=Booking_table()
     var2.date=date
-    var2.TABLE=Table_table.objects.get(id=id)
+    var2.bookingdate=bookdate
+    var2.TABLE=Table_table.objects.get(id=request.session['did'])
     var2.USER=User_table.objects.get(LOGIN_id=request.user.id)
     var2.status='Booked'
     var2.save()
@@ -281,6 +295,10 @@ def send_feedback_post(request):
     return redirect('/myapp/user_home/')
 
 
+def view_food_feedback(request):
+    ab=Review_table.objects.all()
+    return render(request,'admins/view_feedback.html',{'data':ab})
+
 
 @login_required(login_url='/myapp/')
 def user_view_food(request):
@@ -296,7 +314,7 @@ def user_view_food(request):
 @login_required(login_url='/myapp/')
 
 def user_view_order(request):
-    orders = Order_main_table.objects.filter(USER__LOGIN_id=request.user.id)
+    orders = Order_main_table.objects.filter(USER__LOGIN_id=request.user.id,status='paid')
 
     order_list = []
     total_amount_all_orders = 0
@@ -471,7 +489,33 @@ def remove_cart_item(request, sub_id):
 
 
 
+def user_view_food_rating(request,id):
+    request.session['fid']=id
+    a=Review_table.objects.filter(FOOD__id=id)
+    return render(request,'user/view_food_ratings.html',{'data':a})
 
+def delete_feedback(request,id):
+    a=Review_table.objects.get(id=id)
+    a.delete()
+    return redirect("/myapp/user_view_food_rating/"+str(request.session['fid']))
+
+def user_add_food_rating(request,id):
+    request.session['rateid']=id
+    return render(request,'user/feedback_rating.html')
+
+def food_rate_post(request):
+    rating=request.POST['rating']
+    review=request.POST['feedback']
+
+
+    obj=Review_table()
+    obj.rating=rating
+    obj.review=review
+    obj.date=datetime.today()
+    obj.USER=User_table.objects.get(LOGIN_id=request.user.id)
+    obj.FOOD=Food_Items_table.objects.get(id=request.session['rateid'])
+    obj.save()
+    return redirect('/myapp/user_view_food_rating/')
 
 
 
