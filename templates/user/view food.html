@@ -92,7 +92,6 @@
   </div>
 </div>
 
-<!-- Main content: single centered column (no side images) -->
 <div class="container-fluid contact py-5">
   <div class="container">
     <div class="row">
@@ -134,29 +133,23 @@
                   </div>
 
 
-                  <div class="food-actions mt-2">
-                    <!-- user Order button -->
+<div class="food-actions mt-2">
+  <!-- Add to cart form -->
+  <form method="post" action="/myapp/add_cart/{{ i.id }}" class="d-flex align-items-center gap-2 flex-wrap">
+    {% csrf_token %}
+    <input type="number" name="qty" value="1" min="1" step="1" required
+           class="form-control form-control-sm" style="width:84px; padding:.375rem .5rem; text-align:center;" />
 
+    <button type="submit" onclick="return confirm('Are You Sure To Order {{ i.name }} ')" class="btn btn-primary btn-sm rounded-pill">
+      <i class="fas fa-cart-plus me-1"></i> Add to cart
+    </button>
 
-
-
-
-    <!-- compact quantity input -->
-  <form method="post" action="/myapp/add_cart/{{ i.id }}" class="d-flex align-items-center gap-2">
-  {% csrf_token %}
-  <input type="number" name="qty" value="1" min="1" step="1" required
-         class="form-control form-control-sm" style="width:84px; padding:.375rem .5rem; text-align:center;" />
-  <button type="submit" onclick="return confirm('Are You Sure To Order {{ i.name }} ')" class="btn btn-primary btn-sm rounded-pill">
-    <i class="fas fa-cart-plus me-1"></i> Add to cart
-  </button>
-</form>
-
-
-
-
-
-
-                  </div>
+    <!-- ✅ New View Ratings button -->
+    <a href="/myapp/user_view_food_rating/{{ i.id }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="fas fa-star me-1 text-warning"></i> View Ratings
+    </a>
+  </form>
+</div>
                 </div>
 
               </div>

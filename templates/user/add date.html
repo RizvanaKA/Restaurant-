@@ -92,11 +92,11 @@
 <!-- Hero (same look) -->
 <div class="container-fluid bg-light py-6 my-6 mt-0">
   <div class="container text-center">
-    <h1 class="display-1 mb-4">Feedback</h1>
+    <h1 class="display-1 mb-4">Date</h1>
     <ol class="breadcrumb justify-content-center mb-0">
       <li class="breadcrumb-item"><a href="#">Home</a></li>
       <li class="breadcrumb-item"><a href="#">Pages</a></li>
-      <li class="breadcrumb-item text-dark" aria-current="page">Feedback</li>
+      <li class="breadcrumb-item text-dark" aria-current="page">Date</li>
     </ol>
   </div>
 </div>
@@ -110,12 +110,12 @@
         <img src="{% static 'home/img/background-site.jpg' %}" class="img-fluid h-100 w-100 rounded-start" style="object-fit: cover; opacity: 0.7;" alt="">
       </div>
 
-      <!-- center: feedback form -->
+      <!-- center: Date form -->
       <div class="col-10">
         <div class="card-center">
           <div class="text-center">
-            <span class="page-badge text-dark fw-bold">Feedback</span>
-            <h1 class="display-5 mb-4">Share your experience</h1>
+            <span class="page-badge text-dark fw-bold">Date</span>
+            <h1 class="display-5 mb-4">Share your Booking Date</h1>
           </div>
 
           <div class="row g-4 form justify-content-center">
@@ -124,18 +124,18 @@
                 <div class="card-top">
                   <div class="form-badge"><i class="fas fa-comment-alt"></i></div>
                   <div>
-                    <h5 class="form-title text-primary fw-bold mb-0">Send Feedback</h5>
-                    <div class="text-muted small">We appreciate your suggestions</div>
+                    <h5 class="form-title text-primary fw-bold mb-0">Send Date</h5>
+                    <div class="text-muted small"></div>
                   </div>
                 </div>
 
                 <div class="card-body">
-                  <form method="post" action="/myapp/send_feedback_post/" >
+                  <form method="post" action="/myapp/user_book_table/" >
                     {% csrf_token %}
 
                     <div class="row g-3">
                       <div class="col-12">
-                        <input type="text" name="feedback" class="form-control" placeholder="Write your feedback here..." minlength="3" maxlength="500" required>
+                        <input type="date" name="Date" class="form-control" required>
                       </div>
                     </div>
 

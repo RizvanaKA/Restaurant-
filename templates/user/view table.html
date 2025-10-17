@@ -69,7 +69,16 @@
     <h4 class="mb-0 text-dark">Available Tables</h4>
   </div>
 
-
+{% if messages %}
+  <div class="messages position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
   <div class="row g-3">
     {% for i in data %}
@@ -93,7 +102,7 @@
 
           <div>
             <h5 class="booking-title fw-bold mb-0">{{ i.tablename }}</h5>
-            <div class="booking-sub">Capacity: {{ i.capacity }}</div>
+{#            <div class="booking-sub">Capacity: {{ i.capacity }}</div>#}
           </div>
 
           <div class="ms-auto text-end">
@@ -121,7 +130,8 @@
 
         <div class="booking-footer">
           {# Book link — includes id so it points to specific table if your view expects it #}
-          <a href="/myapp/user_book_table/{{ i.id }}" class="btn btn-sm btn-primary btn-book rounded-pill">Book</a>
+          <a href="/myapp/user_add_date/{{ i.id }}" class="btn btn-sm btn-primary btn-book rounded-pill">Book</a>
+{#          <a href="/myapp/user_book_table/{{ i.id }}" class="btn btn-sm btn-primary btn-book rounded-pill">Book</a>#}
         </div>
       </div>
     </div>

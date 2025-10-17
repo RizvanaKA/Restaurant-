@@ -46,7 +46,9 @@
             <ul class="mb-0">
               {% for item in order.items %}
                 <li>{{ item.FOOD.name }} — Qty: {{ item.quantity }} — ₹{{ item.amount }}</li>
-              {% endfor %}
+
+
+            <a href="/myapp/user_add_food_rating/{{ item.FOOD.id }}">Add rating</a>{% endfor %}
             </ul>
           </div>
         </div>
