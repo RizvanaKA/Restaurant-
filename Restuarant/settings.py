@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'Restuarant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'resto3',
+        'NAME': 'resto',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
